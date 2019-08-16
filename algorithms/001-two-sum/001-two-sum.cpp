@@ -9,9 +9,11 @@ class Solution {
 public:
     vector<int> twoSum(vector<int>& nums, int target) {
         std::unordered_map<int, int> nums_map;
-        for (vector<int>::const_iterator it = nums.begin();
-                it != nums.end(); it++) {
-            nums_map.insert(std::make_pair(*it, it - nums.begin()));
+        vector<int> solution;
+
+        for (int i = 0; i < nums.size(); i++) {
+            std::unordered_map<int, int>::value_type pair(nums[i], i);
+            nums_map.insert(pair);
         }
 
         for (vector<int>::const_iterator it = nums.begin();
@@ -22,12 +24,15 @@ public:
                 int i = it - nums.begin();
                 int j = std::get<1>(*match);
 
-                vector<int> solution;
-                solution.push_back(i);
-                solution.push_back(j);
+                if (i != j) {
+                    solution.push_back(i);
+                    solution.push_back(j);
 
-                return solution;
+                    return solution;
+                }
             }
         }
+
+        return solution;
     }
 };
