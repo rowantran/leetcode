@@ -16,14 +16,33 @@ public:
     ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
         ListNode* head = NULL;
         ListNode* prev = NULL;
-        while (l1->next && l2->next) {
-            prev = createNode(prev, l1->val + l2->val);
+        int carry = 0;
+        while (l1 || l2 || carry) {
+            int l1_val, l2_val;
+
+            if (l1) {
+                l1_val = l1->val;
+                l1 = l1->next;
+            } else {
+                l1_val = 0;
+            }
+
+            if (l2) {
+                l2_val = l2->val;
+                l2 = l2->next;
+            } else {
+                l2_val = 0;
+            }
+
+            int place_sum = l1_val + l2_val + carry;
+            int new_val = place_sum % 10;
+            prev = createNode(prev, new_val);
+
             if (!head) {
                 head = prev;
             }
 
-            l1 = l1->next;
-            l2 = l2->next;
+            carry = place_sum / 10;
         }
 
         return head;
