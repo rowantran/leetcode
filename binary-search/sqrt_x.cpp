@@ -7,6 +7,30 @@
 class Solution {
 public:
     int mySqrt(int x) {
-        
+        if (x < 2) {
+            return x;
+        }
+
+        int left = 1;
+        int right = x-1;
+        long mid;
+
+        int answer;
+
+        while (left <= right) {
+            mid = left + (right - left) / 2;
+            long square = mid*mid;
+            if (square == x) {
+                // Perfect square found
+                return mid;
+            } else if (square < x) {
+                left = mid + 1;
+                answer = mid;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        return answer;
     }
 };
