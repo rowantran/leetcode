@@ -18,18 +18,18 @@ private:
         }
 
         int left = 0;
-        int right = nums.size();
+        int right = nums.size() - 1;
 
         while (left < right) {
             int mid = left + (right - left) / 2;
-            if (nums[mid] > nums[left]) {
+            if (nums[mid] < nums[right]) {
                 right = mid;
             } else {
-                // nums[mid] < nums[left] as no duplicate exists in array
+                // nums[mid] > nums[right] as no duplicate exists in array
                 left = mid + 1;
             }
         }
 
-        return left-1;
+        return left;
     }
 };
