@@ -4,25 +4,38 @@
  * If the target is not found in the array, return [-1, -1].
  */
 
+#include <algorithm>
+
+using std::max;
+using std::min;
+
 class Solution {
 public:
     vector<int> searchRange(vector<int>& nums, int target) {
+        if (nums.empty()) {
+            vector<int> range = {-1, -1};
+            return range;
+        } else if (nums.size() == 1 && nums[0] == target) {
+            vector<int> range = {0, 0};
+            return range;
+        }
+
         int left = 0, right = nums.size() - 1;
-        bool left_bound_found = false, right_bound_found = false;
-        int left_bound, right_bound;
+        int left_bound = -1, right_bound = -1;
         while (left + 1 < right) {
             int mid = left + (right - left) / 2;
             if (nums[mid] == target) {
                 if (nums[mid-1] != target && nums[mid+1] != target) {
                     vector<int> range = {mid, mid};
                     return range;
+                } else if (nums[mid] == target && nums[mid-1] == target && nums[mid+1] != target) {
+                    right_bound = mid;
+                    right = mid;
                 } else if (nums[mid] == target && nums[mid-1] != target && nums[mid+1] == target) {
                     left_bound = mid;
-                    left_bound_found = true;
                     left = mid;
                 } else {
-                    right_bound = mid;
-                    right_bound_found = true;
+                    right_bound = mid+1;
                     right = mid;
                 }
             } else if (nums[mid] < target) {
@@ -32,18 +45,19 @@ public:
             }
         }
 
-        if (left_bound_found) {
-            right_bound = left;
-        } else if (right_bound_found) {
-            left_bound = right;
+        vector<int> indices_to_check = {left, right};
+        for (int i : indices_to_check) {
+            if (nums[i] == target) {
+                if (left_bound != -1) {
+                    left_bound = min(left_bound, i);
+                } else {
+                    left_bound = i;
+                }
+                right_bound = max(right_bound, i);
+            }
         }
 
-        if (left_bound_found || right_bound_found) {
-            vector<int> range = {left_bound, right_bound};
-            return range;
-        }
-
-        vector<int> not_found_range = {-1, 1};
-        return not_found_range;
+        vector<int> range = {left_bound, right_bound};
+        return range;
     }
 };
