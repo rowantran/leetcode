@@ -8,18 +8,35 @@ class Solution {
 public:
     typedef vector<int>::size_type size_v;
 
-    int singleNonDuplicateHelper(const vector<int>& nums, size_v low, size_v high) {
-        size_v mid = ((low + high) / 4) * 2;
+    // First, we must consider that with n pairs of integers and 1 lone integer, the total size
+    // of the initial array will always be 2n+1 (odd). So calculating (low+high)/2 for the initial
+    // array is always a "true" middle with the same number of elements before and after it.
 
+    // We want to find either the exact middle element if [0, mid] is an even number of elements,
+    // or middle-1 if [0, mid] is an odd number. This ensures that if there are *only* pairs
+    // before the middle element, the middle element will always be the second element of its pair.
+    // If the middle element is not the second element of its pair, we know that order has been
+    // disturbed *before* the middle element.
+    
+    // Furthermore, this method of calculating the middle element ensures that [low, mid-1]
+    // and [mid+1, high] always have an odd number of elements as well.
+    size_v find_mid(size_v low, size_v high) {
+        size_v mid = (low + high) / 2;
+        if ((mid % 2) != 0) {
+            return mid;
+        } else {
+            return mid - 1;
+        }
+    }
+
+    // This function recursively searches the array from [low, high] for the lone integer.
+    // The logic behind the search is explained in the function.
+    int singleNonDuplicateHelper(const vector<int>& nums, size_v low, size_v high) {
         if (low == high) return nums[low];
 
-        // Since every integer appears twice in the array, if we examine any integer at index n,
-        // that integer is either the first member of its pair, in which case the same integer
-        // will be found at index n+1, or it is the second member of its pair, in which case
-        // the same integer will be found at index n-1. Or, if neither of those conditions are
-        // true, the integer at index n is the lone integer.
-        //
-        // Furthermore, if the middle index of the initial array is the first member of its pair,
+        size_v mid = find_mid(low, high);
+
+        // If the middle index of the initial array is the first member of its pair,
         // the lone integer must be at an index to the left. Conversely, if the middle index is the
         // second member of its pair, the lone integer must be at an index to the right.
         if (nums[mid] == nums[mid+1]) {
